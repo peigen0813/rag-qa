@@ -1,0 +1,70 @@
+[
+  {
+    "id": "q1",
+    "question": "如何创建一个最简单的 FastAPI 应用？",
+    "expected_sources": ["fastapi_tiangolo_com_zh_tutorial_first-steps.txt"],
+    "keywords": ["FastAPI", "uvicorn"]
+  },
+  {
+    "id": "q2",
+    "question": "在 FastAPI 中如何声明路径参数？",
+    "expected_sources": ["fastapi_tiangolo_com_zh_tutorial_path-params.txt"],
+    "keywords": ["路径参数", "item_id"]
+  },
+  {
+    "id": "q3",
+    "question": "FastAPI 的查询参数如何设置默认值？",
+    "expected_sources": ["fastapi_tiangolo_com_zh_tutorial_query-params.txt"],
+    "keywords": ["查询参数", "默认值"]
+  },
+  {
+    "id": "q4",
+    "question": "如何使用 Pydantic 模型定义请求体？",
+    "expected_sources": ["fastapi_tiangolo_com_zh_tutorial_body.txt"],
+    "keywords": ["BaseModel", "请求体"]
+  },
+  {
+    "id": "q5",
+    "question": "如何限制查询参数的最大长度和取值范围？",
+    "expected_sources": [
+      "fastapi_tiangolo_com_zh_tutorial_query-params-str-validations.txt"
+    ],
+    "keywords": ["Query", "max_length", "ge"]
+  },
+  {
+    "id": "q6",
+    "question": "路径参数怎么做数值校验，比如必须大于等于 1？",
+    "expected_sources": [
+      "fastapi_tiangolo_com_zh_tutorial_path-params-numeric-validations.txt"
+    ],
+    "keywords": ["Path", "ge", "路径参数"]
+  },
+  {
+    "id": "q7",
+    "question": "一个接口同时接收路径参数、查询参数和请求体时应该怎么写？",
+    "expected_sources": [
+      "fastapi_tiangolo_com_zh_tutorial_body-multiple-params.txt"
+    ],
+    "keywords": ["请求体", "查询参数", "路径参数"]
+  },
+  {
+    "id": "q8",
+    "question": "如何在请求体字段上添加校验和元数据？",
+    "expected_sources": ["fastapi_tiangolo_com_zh_tutorial_body-fields.txt"],
+    "keywords": ["Field", "校验"]
+  },
+  {
+    "id": "q9",
+    "question": "FastAPI 的依赖注入怎么用？",
+    "expected_sources": ["fastapi_tiangolo_com_zh_tutorial_dependencies.txt"],
+    "keywords": ["Depends", "依赖"]
+  },
+  {
+    "id": "q10",
+    "question": "如何用 APIRouter 把大型应用拆分成多个模块？",
+    "expected_sources": [
+      "fastapi_tiangolo_com_zh_tutorial_bigger-applications.txt"
+    ],
+    "keywords": ["APIRouter", "include_router"]
+  }
+]
