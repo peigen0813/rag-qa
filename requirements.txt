@@ -1,0 +1,22 @@
+# RAG 知识库问答助手 —— Python 依赖
+# Python 3.11
+# 国内安装：
+#   pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+langchain
+langchain-openai
+langchain-chroma
+langchain-text-splitters
+langchain-huggingface
+langgraph
+sentence-transformers>=2.7
+rank_bm25
+jieba
+pypdf
+beautifulsoup4
+lxml
+streamlit
+python-dotenv
+requests
+numpy
+pytest
