@@ -2,6 +2,14 @@
 
 把一堆技术文档变成一个**能回答、能给出处、找不到就说找不到**的问答助手。
 
+> **实测**：12 篇文档 / 413 个块，recall@5 = **1.00**（10/10），faithfulness = **5.00**（自建 10 题评估集 + LLM-as-judge）。口径见 [评估](#评估)。
+>
+> **语料可替换**：默认抓 FastAPI 中文文档（公开、好取、含大量 API 名，正好压测关键词召回）。改 `data/sources.txt` 换成任意文档即可复用，不用改代码。
+>
+> **跑起来看**：`streamlit run app.py`，问「FastAPI 怎么定义路径参数？」就能看到流式回答和来源卡片。
+> <!-- 录好 60 秒演示后，把 gif 放到 docs/demo.gif，并取消下一行注释 -->
+> <!-- ![demo](docs/demo.gif) -->
+
 - 向量检索用本地开源模型 `BAAI/bge-m3`，不依赖外部向量 API
 - 向量 + BM25 混合召回，RRF 融合，可选 CrossEncoder 重排
 - LangGraph 编排「查询改写 → 检索 → 条件生成/兜底」
@@ -53,16 +61,15 @@ class RAGState(TypedDict, total=False):
 
 ## 快速开始
 
-> 以下命令在 **Anaconda Prompt** 中执行（普通 Git Bash 里 `conda activate` 不可用）。
-
 ### 1. 创建环境并安装依赖
 
 ```bat
-conda create -n ragqa python=3.11 -y
-conda activate ragqa
-cd D:\实习项目\rag-qa
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
+
+> 推荐 Python 3.11 / 3.12。用 conda 的话：`conda create -n ragqa python=3.11 -y` 再 `conda activate ragqa`，后续命令相同。
 
 ### 2. 配置 Key
 
@@ -209,34 +216,29 @@ python eval/run_eval.py
 | recall@5 | ≥ 0.70 | **1.00**（10/10） |
 | faithfulness | ≥ 3.50 | **5.00**（10 条） |
 
+> 说明：recall@5 打满说明这批黄金文档与问题匹配得过于容易，**评估集还需要加难例和无答案题才有区分度**，见 [后续可做](#后续可做)。
+
 ---
 
 ## 已知限制
 
 - CPU 推理，首次加载 bge-m3 较慢（约 10–30 秒）；建库时计算向量是主要耗时。
 - 单用户本地应用，没有鉴权、会话持久化和并发控制。
-- 评估集只有 10 条，指标用于回归对比，不代表线上效果。
+- 评估集只有 10 条，且难度偏低（recall@5 已打满），指标只用于回归对比，不代表线上效果。
 - 增量入库只增不删；文档内容大改时建议 `--reset`。
+- 检索置信度目前只看向量余弦（或重排 logit 的 sigmoid），BM25 精确命中没有进入路由判断。
 
 ## 后续可做
 
-- 用 LangGraph Checkpointer 持久化多轮会话；
-- 查询扩展（multi-query）与父文档检索（parent-document retrieval）；
-- 把检索器包装成工具，接入 ReAct Agent 做「先查再答 / 多步检索」；
-- Docker 化 + FastAPI 服务端 + 前端分离。
+- [ ] 用 LangGraph Checkpointer 持久化多轮会话，支持 `interrupt` 人工确认
+- [ ] 查询扩展（multi-query）与父文档检索（parent-document retrieval）
+- [ ] 把检索器包装成工具，接入 ReAct Agent 做「先查再答 / 多步检索」
+- [ ] Docker 化 + FastAPI 服务端 + 前端分离
+- [ ] 评估集扩充：加 10 条难例和 5 条「库里没有答案」的题
+- [ ] 统一路由信号：把 BM25 命中与向量分归一到同一量纲再判阈值
 
 ---
 
-## 简历写法（可直接改）
+## License
 
-- 从零实现 RAG 知识库问答系统，使用 **LangGraph** 编排查询改写、混合检索、条件生成/兜底四节点，支持多轮指代消解。
-- 设计 **向量 + BM25 混合检索**，以 **RRF** 融合双路召回并可接 CrossEncoder 重排，缓解专有名词召回与同义表达两类问题。
-- 使用本地 **bge-m3 + Chroma** 完成离线向量化，基于内容哈希实现幂等增量入库；回答带 `[n]` 引用与来源卡片。
-- 基于 **Streamlit** 实现流式交互；自建 10 题评估集与 LLM-as-judge，量化 recall@k 与忠实度。
-- 编写网络隔离的 pytest 离线测试，覆盖切分、融合、路由与密钥泄漏防护。
-
----
-
-## English Summary
-
-A retrieval-augmented generation (RAG) assistant built with **LangGraph**, **LangChain**, **Chroma**, and a local **BAAI/bge-m3** embedding model. It combines dense retrieval with BM25 using Reciprocal Rank Fusion, supports optional CrossEncoder reranking, answers with inline `[n]` citations, and falls back explicitly when the knowledge base lacks evidence. The Streamlit UI streams tokens and renders source cards. Includes offline unit tests (network-blocked) and a small evaluation harness for recall@k and faithfulness.
+[MIT](LICENSE)
